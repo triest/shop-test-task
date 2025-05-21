@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RedirectsUsers;
@@ -10,6 +11,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -71,14 +73,25 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-
-        return User::create([
+        DB::beginTransaction();
+        $user = User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'middle_name' => $data['middle_name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+
+        $role = Role::query()->where('slug', Role::ROLE_CUSTOMER)->first();
+
+        if($role){
+            $user->roles()->save($role);
+            $user->save();
+        }
+
+
+        DB::commit();
+        return $user;
     }
 
 
@@ -102,9 +115,6 @@ class RegisterController extends Controller
      */
     public function register(Request $request)
     {
-
-
-
 
         event(new Registered($user = $this->create($request->all())));
 

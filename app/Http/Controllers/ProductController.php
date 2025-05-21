@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\CreateProductDTO;
+use App\DTO\OrderUpdateDTO;
+use App\Http\Requests\CreateProductRequest;
 use App\Models\OrderProduct;
 use App\Models\OrderStatus;
 use App\Models\Product\Category;
 use App\Models\Product\Product;
+use App\Services\OrderService;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -39,16 +44,10 @@ class ProductController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(CreateProductRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:products,name',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-        ]);
 
-        Product::create($validated);
+        $product = ProductService::store(new CreateProductDTO(...$request->validated()));
 
         return redirect()->route('product.index')
             ->with('success', 'Product created successfully.');

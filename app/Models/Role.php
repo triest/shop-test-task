@@ -10,6 +10,8 @@ class Role extends Model
     use HasFactory;
 
 
+    const ROLE_ADMIN = 'admin';
+    const ROLE_CUSTOMER = 'customer';
 
     public function permissions()
     {

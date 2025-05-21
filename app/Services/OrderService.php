@@ -9,6 +9,7 @@ use App\Models\OrderProduct;
 use App\Models\OrderStatus;
 use App\Models\Product\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
@@ -23,10 +24,10 @@ class OrderService
 
     public static function addItem(Product $product, $quantity)
     {
+        DB::beginTransaction();
         $user = Auth::user();
 
         $orderStatus = OrderStatus::query()->where('slug', OrderStatus::STATUS_NEW)->first();
-
 
         $order = Order::query()->whereHas('user', function ($query) {
             $query->where('id', Auth::id());
@@ -59,6 +60,7 @@ class OrderService
 
         $order->save();
 
+        DB::commit();
         return redirect()->route('order.index')
             ->with('success', 'Product added to order');
 

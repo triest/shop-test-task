@@ -4,6 +4,7 @@
     <div class="container">
         <h1>Product Catalog</h1>
 
+        <a href="{{route('product.create')}}">Создать товар</a>
         <div class="row">
             @foreach($products as $product)
                 <div class="col-md-4 mb-4">
