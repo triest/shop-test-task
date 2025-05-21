@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +18,25 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('catalog.index');
+});
+
+Auth::routes();
+
+
+
+Route::prefix('products')->middleware('role:admin')->group(function () {
+  Route::resource('product',ProductController::class);
+});
+
+
+Route::prefix('catalog')->group(function () {
+    Route::resource('/',CatalogController::class);
+});
+
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+
+Route::resource('order', OrderController::class);
+Route::prefix('order')->group(function () {
+    Route::post('/add-item', [OrderController::class, 'addItem'])->name('order.add-item');
 });
