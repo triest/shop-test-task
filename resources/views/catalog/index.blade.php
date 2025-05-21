@@ -12,7 +12,7 @@
                             <h5 class="card-title">{{ $product->name }}</h5>
                             <p class="card-text">{{ $product->description }}</p>
                             <p class="text-muted">Price: ${{ number_format($product->price, 2) }}</p>
-
+                            @role('customer')
                             <!-- Форма с явным указанием области действия -->
                             <form action="{{ route('order.add-item') }}" method="POST" class="d-inline" >
                                 @csrf
@@ -30,6 +30,7 @@
                                 </div>
                                 <input type="submit">
                             </form>
+                            @endrole
                         </div>
                     </div>
                 </div>

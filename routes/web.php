@@ -30,9 +30,6 @@ Route::prefix('products')->middleware('role:admin')->group(function () {
 });
 
 
-Route::prefix('catalog')->group(function () {
-    Route::resource('/',CatalogController::class);
-});
 
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 

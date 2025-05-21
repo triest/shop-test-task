@@ -21,7 +21,7 @@ class RoleSeeder extends Seeder
         $manager->save();
         $developer = new Role();
         $developer->name = 'Заказчик';
-        $developer->slug = ' customer';
+        $developer->slug = 'customer';
         $developer->save();
     }
 }
